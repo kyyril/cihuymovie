@@ -1,8 +1,12 @@
+import { Outlet } from "react-router-dom";
+import Layout from "./components/Layout";
+
 function MyApp() {
   return (
     <>
-      <h1>halo</h1>
-      <div>apalahdwddwdqwe</div>
+      <Layout>
+        <Outlet />
+      </Layout>
     </>
   );
 }
