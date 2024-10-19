@@ -1,4 +1,12 @@
-import { Box, Container, Flex, Grid, Heading, Spinner } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Flex,
+  Grid,
+  Heading,
+  Skeleton,
+  Spinner,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { fetchTrend } from "../services/api";
 import { Data } from "../types/data.interface";
@@ -40,7 +48,7 @@ const Home = () => {
         )}
         <Box
           as="button"
-          color={timeWindow === "day" ? "yellow.400" : ""}
+          color={timeWindow === "day" ? "yellow.500" : ""}
           textDecoration={timeWindow === "day" ? "underline" : ""}
           onClick={() => setTimeWindow("day")}
           _hover={{
@@ -52,7 +60,7 @@ const Home = () => {
 
         <Box
           as="button"
-          color={timeWindow === "week" ? "yellow.400" : ""}
+          color={timeWindow === "week" ? "yellow.500" : ""}
           textDecoration={timeWindow === "week" ? "underline" : ""}
           onClick={() => setTimeWindow("week")}
           _hover={{
@@ -74,7 +82,13 @@ const Home = () => {
         {data &&
           data
             .filter((item) => item?.poster_path || item?.backdrop_path) // Filter data yang memiliki poster_path
-            .map((item) => <Card key={item?.id} item={item} />)}
+            .map((item, i) =>
+              loading ? (
+                <Skeleton height={"300px"} key={i} />
+              ) : (
+                <Card key={item?.id} item={item} />
+              )
+            )}
       </Grid>
     </Container>
   );
