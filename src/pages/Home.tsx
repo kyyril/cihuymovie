@@ -6,6 +6,7 @@ import {
   Heading,
   Skeleton,
   Spinner,
+  Text,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { fetchTrend } from "../services/api";
@@ -14,8 +15,9 @@ import Card from "../components/Card";
 
 const Home = () => {
   const [data, setData] = useState<Data[]>([]);
-  const [timeWindow, setTimeWindow] = useState("day");
+  const [timeWindow, setTimeWindow] = useState("week");
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     setLoading(true);
     // Fetch trending movies for the day
@@ -32,6 +34,8 @@ const Home = () => {
   }, [timeWindow]);
 
   console.log(data, "data");
+
+  const filteredData = data.filter((item) => item?.poster_path); // Filter data yang memiliki poster_path
 
   return (
     <Container maxW={"container.lg"}>
@@ -79,16 +83,22 @@ const Home = () => {
         }}
         gap={"4"}
       >
-        {data &&
-          data
-            .filter((item) => item?.poster_path || item?.backdrop_path) // Filter data yang memiliki poster_path
-            .map((item, i) =>
-              loading ? (
-                <Skeleton height={"300px"} key={i} />
-              ) : (
-                <Card key={item?.id} item={item} />
-              )
-            )}
+        {loading ? (
+          // Display skeletons while loading
+          Array(10)
+            .fill(null)
+            .map((_, index) => <Skeleton height="300px" key={index} />)
+        ) : filteredData.length > 0 ? (
+          // Display cards if data is available
+          filteredData.map((item) => <Card key={item?.id} item={item} />)
+        ) : (
+          // Display message when no data is available
+          <Box display="flex" justifyContent="center" w="full" py={4}>
+            <Text fontSize="lg" textAlign="center" color="gray.500">
+              Data for day not available😴
+            </Text>
+          </Box>
+        )}
       </Grid>
     </Container>
   );

@@ -8,9 +8,24 @@ export const imagePath = "https://image.tmdb.org/t/p/w500";
 export const imagePathOrigin = "https://image.tmdb.org/t/p/original";
 
 //trending
-export const fetchTrend = async (timeWindow = "day") => {
+export const fetchTrend = async (timeWindow = "week") => {
   const { data } = await axios.get(
     `${baseUrl}/trending/all/${timeWindow}?api_key=${apiKey}`
   );
   return data?.results;
+};
+
+//detail movie/series
+
+export const fetchDetailsMovie = async ({
+  type,
+  id,
+}: {
+  type: "movie" | "series";
+  id: number;
+}) => {
+  const { data } = await axios.get(
+    `${baseUrl}/${type}/${id}?api_key=${apiKey}`
+  );
+  return data;
 };

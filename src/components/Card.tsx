@@ -22,7 +22,7 @@ const Card = ({ item }: { item: Data }) => {
         <Image
           w={"full"}
           h={260}
-          src={`${imagePath}/${item?.poster_path || item?.backdrop_path}`}
+          src={`${imagePath}/${item?.poster_path}`}
           alt={item?.name || item?.original_name}
         />
         <Box
