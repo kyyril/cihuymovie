@@ -12,7 +12,7 @@ const styles = {
     body: {
       bg: mode(
         props.theme.colors["chakra-body-bg"] || "white", // Light mode background
-        "blackAlpha.500" // Dark mode background
+        "blackAlpha.900" // Dark mode background
       )(props),
     },
   }),

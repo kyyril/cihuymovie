@@ -12,3 +12,7 @@ export interface CastDetails {
   popularity: number;
   profile_path: string | null; //
 }
+
+export interface CreditsData {
+  cast: CastDetails[];
+}

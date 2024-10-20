@@ -25,30 +25,31 @@ import {
   PlusSquareIcon,
 } from "@chakra-ui/icons";
 import { ratingToPercentage, resolveRatingColor } from "../utils/helpers";
+
 //interface
 import { MovieDetails } from "../types/dataDetails.interface";
-import { CastDetails } from "../types/castDetail.interface";
+import { CastDetails, CreditsData } from "../types/castDetail.interface";
 
 const DetailsPage = () => {
-  const { type, id } = useParams<{ type: string; id: string }>(); // Destructure with type
-
+  const { type, id } = useParams<{ type: string; id: string }>(); // Ensure correct typing for params
   const [details, setDetails] = useState<MovieDetails | null>(null);
-  const [cast, setCast] = useState<CastDetails[] | null>(null); // Update type to an array of CastDetails
+  const [cast, setCast] = useState<CastDetails[] | null>(null); // Cast details as array
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [detailsData, creditsData]: [MovieDetails, CastDetails[]] =
+        const [detailsData, creditsData]: [MovieDetails, CreditsData] =
           await Promise.all([
             fetchDetailsMovie({ type, id }),
             fetchCredits({ type, id }),
           ]);
+
         // Set details data
         setDetails(detailsData);
 
-        // Set credits data (cast)
-        setCast(creditsData);
+        // Set cast data
+        setCast(creditsData.cast);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -57,6 +58,7 @@ const DetailsPage = () => {
     };
     fetchData();
   }, [type, id]);
+
   console.log(cast, "cast");
 
   if (loading) {
@@ -116,8 +118,9 @@ const DetailsPage = () => {
                   </Text>
                 </Flex>
               </Flex>
-              <Flex alignItems={"center"} gap={"4"}>
+              <Flex alignItems={"center"}>
                 <CircularProgress
+                  mr={"1"}
                   value={Number(ratingToPercentage(details?.vote_average)) || 0}
                   bg={"rgb(0,0,0,0.10"}
                   borderRadius={"full"}
@@ -133,19 +136,19 @@ const DetailsPage = () => {
                     </Box>
                   </CircularProgressLabel>
                 </CircularProgress>
-                <Text display={{ base: "none", md: "initial" }}>
-                  User Score
-                </Text>
+                <Text display={{ base: "none", md: "initial" }}>Score</Text>
                 <Button
+                  mx={"4"}
                   leftIcon={<CheckCircleIcon />}
                   colorScheme="green"
                   variant={"outline"}
-                ></Button>
+                >
+                  In WacthList
+                </Button>
 
-                <Button
-                  leftIcon={<PlusSquareIcon />}
-                  variant={"outline"}
-                ></Button>
+                <Button leftIcon={<PlusSquareIcon />} variant={"outline"}>
+                  WatchList
+                </Button>
               </Flex>
               <Text
                 opacity={"70%"}
@@ -163,13 +166,38 @@ const DetailsPage = () => {
               </Text>
               <Flex>
                 {details?.genres?.map((genre) => (
-                  <Badge key={genre?.id}>{genre?.name}</Badge>
+                  <Badge mr={"1"} p={"1"} key={genre?.id}>
+                    {genre?.name}
+                  </Badge>
                 ))}
               </Flex>
             </Box>
           </Flex>
         </Container>
       </Box>
+      <Container maxW={"container.xl"} pb={"10"}>
+        <Heading
+          as={"h2"}
+          fontSize={"md"}
+          textTransform={"uppercase"}
+          mt={"10"}
+        >
+          Cast
+        </Heading>
+        <Flex gap={"4"} mt={"5"} mb={"10"} overflowX={"scroll"}>
+          {cast?.length === 0 && <Text>Cast Not Found</Text>}
+          {cast?.map((item) => (
+            <Box key={item.id} minW={"150px"}>
+              <Image
+                borderRadius={"sm"}
+                src={`${imagePath}/${item.profile_path}`}
+                alt={item.name}
+              />
+              <Text>{item.name}</Text>
+            </Box>
+          ))}
+        </Flex>
+      </Container>
     </Box>
   );
 };
