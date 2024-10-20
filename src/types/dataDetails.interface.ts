@@ -44,13 +44,16 @@ export interface MovieDetails {
   poster_path: string;
   production_companies: ProductionCompany[];
   production_countries: ProductionCountry[];
-  release_date: string;
+  release_date: any;
+  first_air_date: any;
   revenue: number;
   runtime: number;
   spoken_languages: SpokenLanguage[];
   status: string;
   tagline: string;
   title: string;
+  name: string;
+  original_name: string;
   video: boolean;
   vote_average: number;
   vote_count: number;

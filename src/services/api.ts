@@ -16,10 +16,17 @@ export const fetchTrend = async (timeWindow = "week") => {
 };
 
 //detail movie/series
-
 export const fetchDetailsMovie = async ({ type, id }: any) => {
   const { data } = await axios.get(
     `${baseUrl}/${type}/${id}?api_key=${apiKey}`
+  );
+  return data;
+};
+
+//credits
+export const fetchCredits = async ({ type, id }: any) => {
+  const { data } = await axios.get(
+    `${baseUrl}/${type}/${id}/credits?api_key=${apiKey}`
   );
   return data;
 };

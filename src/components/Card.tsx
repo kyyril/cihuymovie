@@ -48,14 +48,16 @@ const Card = ({ item, type }: PropsData) => {
             color={"white"}
             isTruncated
           >
-            {item?.name || "Title N/A"}
+            {item?.name || item?.title || "Title N/A"}
           </Text>
-          <Text textAlign={"center"} fontSize={"sm"} color={"yellow.300"}>
-            {new Date(item?.first_air_date).getFullYear() || "N/A"}
+          <Text textAlign={"center"} fontSize={"sm"} color={"yellow"}>
+            {new Date(item?.first_air_date).getFullYear() ||
+              new Date(item?.release_date).getFullYear() ||
+              "N/A"}
           </Text>
           <Flex justify={"space-between"} mt={"3"} mb={"1"} color={"white"}>
             <Flex fontSize={"small"} gap={"1"}>
-              <StarIcon color={"yellow.400"} />
+              <StarIcon color={"yellow"} />
               <Text>{item?.vote_average.toFixed(1) || "N/A"}</Text>
             </Flex>
             <Flex fontSize={"small"} gap={"1"}>

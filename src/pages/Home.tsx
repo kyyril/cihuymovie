@@ -52,7 +52,7 @@ const Home = () => {
         )}
         <Box
           as="button"
-          color={timeWindow === "day" ? "yellow.500" : ""}
+          color={timeWindow === "day" ? "yellow" : ""}
           textDecoration={timeWindow === "day" ? "underline" : ""}
           onClick={() => setTimeWindow("day")}
           _hover={{
@@ -64,7 +64,7 @@ const Home = () => {
 
         <Box
           as="button"
-          color={timeWindow === "week" ? "yellow.500" : ""}
+          color={timeWindow === "week" ? "yellow" : ""}
           textDecoration={timeWindow === "week" ? "underline" : ""}
           onClick={() => setTimeWindow("week")}
           _hover={{
