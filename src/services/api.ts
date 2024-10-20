@@ -1,10 +1,5 @@
 import axios from "axios";
 
-interface PropsData {
-  type: string;
-  id: number;
-}
-
 const baseUrl = "https://api.themoviedb.org/3";
 const apiKey = import.meta.env.VITE_API_KEY;
 
@@ -22,7 +17,7 @@ export const fetchTrend = async (timeWindow = "week") => {
 
 //detail movie/series
 
-export const fetchDetailsMovie = async ({ type, id }: PropsData) => {
+export const fetchDetailsMovie = async ({ type, id }: any) => {
   const { data } = await axios.get(
     `${baseUrl}/${type}/${id}?api_key=${apiKey}`
   );
