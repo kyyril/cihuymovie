@@ -30,3 +30,11 @@ export const fetchCredits = async ({ type, id }: any) => {
   );
   return data;
 };
+
+//videos
+export const fetchVideo = async ({ type, id }: any) => {
+  const { data } = await axios.get(
+    `${baseUrl}/${type}/${id}/videos?api_key=${apiKey}`
+  );
+  return data;
+};

@@ -16,6 +16,7 @@ import {
 import {
   fetchCredits,
   fetchDetailsMovie,
+  fetchVideo,
   imagePath,
   imagePathOrigin,
 } from "../services/api";
@@ -23,33 +24,58 @@ import {
   CalendarIcon,
   CheckCircleIcon,
   PlusSquareIcon,
+  TimeIcon,
 } from "@chakra-ui/icons";
-import { ratingToPercentage, resolveRatingColor } from "../utils/helpers";
+import {
+  minutesTohours,
+  ratingToPercentage,
+  resolveRatingColor,
+} from "../utils/helpers";
 
 //interface
 import { MovieDetails } from "../types/dataDetails.interface";
 import { CastDetails, CreditsData } from "../types/castDetail.interface";
+import { VideoDetails, VideosData } from "../types/videos.interface";
+import VideoComponent from "../components/VideoComponent";
 
 const DetailsPage = () => {
   const { type, id } = useParams<{ type: string; id: string }>(); // Ensure correct typing for params
   const [details, setDetails] = useState<MovieDetails | null>(null);
-  const [cast, setCast] = useState<CastDetails[] | null>(null); // Cast details as array
+  const [cast, setCast] = useState<CastDetails[]>([]); // Initialize as an empty array
+  const [video, setVideo] = useState<VideoDetails | null>(null);
+  const [videos, setVideos] = useState<VideoDetails[]>([]); // Initialize as an empty array
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [detailsData, creditsData]: [MovieDetails, CreditsData] =
-          await Promise.all([
-            fetchDetailsMovie({ type, id }),
-            fetchCredits({ type, id }),
-          ]);
+        const [detailsData, creditsData, videosData]: [
+          MovieDetails,
+          CreditsData,
+          VideosData
+        ] = await Promise.all([
+          fetchDetailsMovie({ type, id }),
+          fetchCredits({ type, id }),
+          fetchVideo({ type, id }),
+        ]);
 
         // Set details data
         setDetails(detailsData);
 
         // Set cast data
         setCast(creditsData.cast);
+
+        // Set trailer video (assuming it's the first found trailer)
+        const trailerVideo = videosData?.results?.find(
+          (video) => video?.type === "Trailer"
+        );
+        setVideo(trailerVideo || null); // Set null if no trailer is found
+
+        // Set other videos, excluding trailers
+        const filteredVideos = videosData?.results
+          ?.filter((video) => video?.type !== "Trailer")
+          ?.slice(0, 10);
+        setVideos(filteredVideos || []); // Set an empty array if no videos are found
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -59,8 +85,8 @@ const DetailsPage = () => {
     fetchData();
   }, [type, id]);
 
-  console.log(cast, "cast");
-
+  console.log(video, "video");
+  console.log(videos, "videos");
   if (loading) {
     return (
       <Flex justify={"center"} marginTop={"40"}>
@@ -87,7 +113,7 @@ const DetailsPage = () => {
         display={"flex"}
         alignItems={"center"}
       >
-        <Container maxW={"container.xl"}>
+        <Container maxW={"container.lg"}>
           <Flex
             alignItems={"center"}
             gap={"10"}
@@ -117,6 +143,17 @@ const DetailsPage = () => {
                     {new Date(releaseDate).toLocaleDateString("en-US")}(US)
                   </Text>
                 </Flex>
+                {type === "movie" && (
+                  <>
+                    <Box>*</Box>
+                    <Flex alignItems={"center"}>
+                      <TimeIcon />
+                      <Text fontSize={"sm"}>
+                        {minutesTohours(details?.runtime)}
+                      </Text>
+                    </Flex>
+                  </>
+                )}
               </Flex>
               <Flex alignItems={"center"}>
                 <CircularProgress
@@ -175,7 +212,7 @@ const DetailsPage = () => {
           </Flex>
         </Container>
       </Box>
-      <Container maxW={"container.xl"} pb={"10"}>
+      <Container maxW={"container.lg"} pb={"10"}>
         <Heading
           as={"h2"}
           fontSize={"md"}
@@ -187,15 +224,36 @@ const DetailsPage = () => {
         <Flex gap={"4"} mt={"5"} mb={"10"} overflowX={"scroll"}>
           {cast?.length === 0 && <Text>Cast Not Found</Text>}
           {cast?.map((item) => (
-            <Box key={item.id} minW={"150px"}>
+            <Box key={item?.id} minW={"150px"}>
               <Image
                 borderRadius={"sm"}
-                src={`${imagePath}/${item.profile_path}`}
-                alt={item.name}
+                src={`${imagePath}/${item?.profile_path}`}
+                alt={item?.name}
               />
-              <Text>{item.name}</Text>
+              <Text>{item?.name}</Text>
             </Box>
           ))}
+        </Flex>
+        <Heading
+          as={"h2"}
+          fontSize={"md"}
+          textTransform={"uppercase"}
+          mt={"10"}
+          mb={"5"}
+        >
+          Video
+        </Heading>
+        <VideoComponent id={video?.key} size="500" />
+        <Flex mt={5} mb={10} overflowX={"scroll"} gap={5}>
+          {videos &&
+            videos?.map((item) => (
+              <Box key={item?.id} minW={"290px"}>
+                <VideoComponent id={item?.key} size="150" />
+                <Text fontWeight={"bold"} fontSize={"sm"} noOfLines={2}>
+                  {item?.name}
+                </Text>
+              </Box>
+            ))}
         </Flex>
       </Container>
     </Box>
