@@ -4,9 +4,14 @@ import { imagePath } from "../services/api";
 import { Data } from "../types/data.interface";
 import { StarIcon, ViewIcon } from "@chakra-ui/icons";
 
-const Card = ({ item }: { item: Data }) => {
+interface PropsData {
+  item: Data; // 'item' is of type 'Data'
+  type: string;
+}
+
+const Card = ({ item, type }: PropsData) => {
   return (
-    <Link to={"/"}>
+    <Link to={`/${type}/${item?.id}`}>
       <Box
         pos={"relative"}
         scale={1}

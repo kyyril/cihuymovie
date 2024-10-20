@@ -90,7 +90,9 @@ const Home = () => {
             .map((_, index) => <Skeleton height="300px" key={index} />)
         ) : filteredData.length > 0 ? (
           // Display cards if data is available
-          filteredData.map((item) => <Card key={item?.id} item={item} />)
+          filteredData.map((item) => (
+            <Card key={item?.id} item={item} type={item?.media_type} />
+          ))
         ) : (
           // Display message when no data is available
           <Box display="flex" justifyContent="center" w="full" py={4}>
