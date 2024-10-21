@@ -12,19 +12,22 @@ import { useEffect, useState } from "react";
 import { fetchMovies } from "../../services/api";
 import { Data } from "../../types/data.interface";
 import Card from "../../components/Card";
+import Pagination from "../../components/Pagination";
 
 const Movies = () => {
   const [movies, setMovies] = useState<Data[]>([]);
   const [loading, setLoading] = useState(true);
   const [activePage, setActivePage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
 
   useEffect(() => {
     setLoading(true);
     // Fetch movies
     fetchMovies(activePage)
       .then((res) => {
-        setMovies(res.results || []); // Pastikan hasil response ada di res.results
-        setActivePage(res.page); // Update active page
+        setMovies(res?.results);
+        setActivePage(res?.page); // Update active page
+        setTotalPage(res?.total_pages); // Update total page
         console.log(activePage, "page");
       })
       .catch((err) => {
@@ -35,7 +38,7 @@ const Movies = () => {
       });
   }, [activePage]);
 
-  const filteredData = movies.filter((item) => item?.poster_path); // Filter hanya data yang memiliki poster_path
+  const filteredData = movies?.filter((item) => item?.poster_path); // Filter hanya data yang memiliki poster_path
 
   return (
     <Container maxW={"container.lg"}>
@@ -79,6 +82,13 @@ const Movies = () => {
           </Box>
         )}
       </Grid>
+
+      {/* Pagination */}
+      <Pagination
+        activePage={activePage}
+        totalPage={totalPage}
+        setActivePage={setActivePage}
+      />
     </Container>
   );
 };
