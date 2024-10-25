@@ -4,6 +4,7 @@ import {
   Flex,
   Grid,
   Heading,
+  Select,
   Skeleton,
   Spinner,
   Text,
@@ -19,11 +20,12 @@ const Movies = () => {
   const [loading, setLoading] = useState(true);
   const [activePage, setActivePage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+  const [sortBy, setSortBy] = useState("popularity.desc");
 
   useEffect(() => {
     setLoading(true);
     // Fetch movies
-    fetchMovies(activePage)
+    fetchMovies(activePage, sortBy)
       .then((res) => {
         setMovies(res?.results);
         setActivePage(res?.page); // Update active page
@@ -36,7 +38,7 @@ const Movies = () => {
       .finally(() => {
         setLoading(false);
       });
-  }, [activePage]);
+  }, [activePage, sortBy]);
 
   const filteredData = movies?.filter((item) => item?.poster_path); // Filter hanya data yang memiliki poster_path
 
@@ -46,6 +48,19 @@ const Movies = () => {
         <Heading as="h2" fontSize={"md"} textTransform={"uppercase"}>
           Discover Movies
         </Heading>
+
+        <Select
+          w={"130px"}
+          onChange={(e) => {
+            setActivePage(1); // Reset active page when sorting
+            setSortBy(e.target.value);
+          }}
+        >
+          <option value="popularity.desc">Popular</option>
+          <option value="vote_average.desc&vote_count.gte=1000">
+            Top Rate
+          </option>
+        </Select>
       </Flex>
       <Flex gap={"4"} mb={"3"} justifyContent={"flex-end"}>
         {loading && (
