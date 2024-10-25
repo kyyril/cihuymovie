@@ -227,6 +227,9 @@ const DetailsPage = () => {
             <Box key={item?.id} minW={"150px"}>
               <Image
                 borderRadius={"sm"}
+                w={"100%"}
+                height={"225px"}
+                objectFit={"cover"}
                 src={`${imagePath}/${item?.profile_path}`}
                 alt={item?.name}
               />
