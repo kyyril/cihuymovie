@@ -54,3 +54,11 @@ export const fetchTvShow = async (page: number, sortBy: string) => {
   );
   return res?.data;
 };
+
+//search data
+export const SearchData = async (query: string, page: number) => {
+  const res = await axios.get(
+    `${baseUrl}/search/multi?api_key=${apiKey}&query=${query}&page=${page}`
+  );
+  return res?.data;
+};
