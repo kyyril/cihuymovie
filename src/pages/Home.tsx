@@ -6,7 +6,6 @@ import {
   Heading,
   Skeleton,
   Spinner,
-  Text,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { fetchTrend } from "../services/api";
@@ -34,8 +33,6 @@ const Home = () => {
   }, [timeWindow]);
 
   console.log(data, "data");
-
-  const filteredData = data.filter((item) => item?.poster_path); // Filter data yang memiliki poster_path
 
   return (
     <Container maxW={"container.lg"}>
@@ -74,6 +71,15 @@ const Home = () => {
           This Week
         </Box>
       </Flex>
+
+      {data.length === 0 && !loading && (
+        <Flex justifyContent={"center"} mt={"30"}>
+          <Heading as="h3" fontSize="lg">
+            No results found
+          </Heading>
+        </Flex>
+      )}
+
       <Grid
         templateColumns={{
           base: "repeat(2, 1fr)",
@@ -83,25 +89,16 @@ const Home = () => {
         }}
         gap={"4"}
       >
-        {loading ? (
-          // Display skeletons while loading
-          Array(10)
-            .fill(null)
-            .map((_, index) => <Skeleton height="300px" key={index} />)
-        ) : filteredData.length > 0 ? (
-          // Display cards if data is available
-          filteredData.map((item) => (
-            <Card key={item?.id} item={item} type={item?.media_type} />
-          ))
-        ) : (
-          // Display message when no data is available
-          <Box display="flex" justifyContent="center" w="full" py={4}>
-            <Text fontSize="lg" textAlign="center" color="gray.500">
-              Data for day not available😴
-            </Text>
-          </Box>
-        )}
+        {loading
+          ? Array.from({ length: 10 }).map((_, i) => (
+              <Skeleton height={300} key={i} />
+            ))
+          : data?.map((item) => (
+              <Card key={item?.id} item={item} type={"movie"} />
+            ))}
       </Grid>
+
+      {data?.length > 0 && !loading && <div></div>}
     </Container>
   );
 };

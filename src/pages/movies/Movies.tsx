@@ -1,13 +1,10 @@
 import {
-  Box,
   Container,
   Flex,
   Grid,
   Heading,
   Select,
   Skeleton,
-  Spinner,
-  Text,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { fetchMovies } from "../../services/api";
@@ -40,11 +37,9 @@ const Movies = () => {
       });
   }, [activePage, sortBy]);
 
-  const filteredData = movies?.filter((item) => item?.poster_path); // Filter hanya data yang memiliki poster_path
-
   return (
     <Container maxW={"container.lg"}>
-      <Flex alignItems={"baseline"} gap={"4"} mt={"6"}>
+      <Flex alignItems={"baseline"} gap={"4"} my="10">
         <Heading as="h2" fontSize={"md"} textTransform={"uppercase"}>
           Discover Movies
         </Heading>
@@ -52,7 +47,7 @@ const Movies = () => {
         <Select
           w={"130px"}
           onChange={(e) => {
-            setActivePage(1); // Reset active page when sorting
+            setActivePage(1);
             setSortBy(e.target.value);
           }}
         >
@@ -62,48 +57,32 @@ const Movies = () => {
           </option>
         </Select>
       </Flex>
-      <Flex gap={"4"} mb={"3"} justifyContent={"flex-end"}>
-        {loading && (
-          <Box display="flex" alignItems="center" ml={2}>
-            <Spinner size="xs" />
-          </Box>
-        )}
-      </Flex>
+
       <Grid
         templateColumns={{
-          base: "repeat(2, 1fr)",
-          sm: "repeat(3, 1fr)",
+          base: "1fr",
+          sm: "repeat(2, 1fr)",
           md: "repeat(4, 1fr)",
           lg: "repeat(5, 1fr)",
         }}
         gap={"4"}
       >
-        {loading ? (
-          // Display skeletons while loading
-          Array(10)
-            .fill(null)
-            .map((_, index) => <Skeleton height="300px" key={index} />)
-        ) : filteredData.length > 0 ? (
-          // Display cards if data is available
-          filteredData.map((item) => (
-            <Card key={item.id} item={item} type="movie" />
-          ))
-        ) : (
-          // Display message when no data is available
-          <Box display="flex" justifyContent="center" w="full" py={4}>
-            <Text fontSize="lg" textAlign="center" color="gray.500">
-              Data for the Movies not available 😴
-            </Text>
-          </Box>
-        )}
+        {loading
+          ? Array.from({ length: 10 }).map((_, i) => (
+              <Skeleton height={300} key={i} />
+            ))
+          : movies.map((item) => (
+              <Card key={item?.id} item={item} type={"movie"} />
+            ))}
       </Grid>
 
-      {/* Pagination */}
-      <Pagination
-        activePage={activePage}
-        totalPage={totalPage}
-        setActivePage={setActivePage}
-      />
+      {movies?.length > 0 && !loading && (
+        <Pagination
+          activePage={activePage}
+          totalPage={totalPage}
+          setActivePage={setActivePage}
+        />
+      )}
     </Container>
   );
 };
