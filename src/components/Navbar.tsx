@@ -1,7 +1,16 @@
-import { Box, Container, Flex } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Container,
+  Flex,
+  Menu,
+  MenuButton,
+} from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+// import { useAuth } from "../context/useAuth";
 
 const Navbar = () => {
+  // const { user, signOut, signInWithGoogle } = useAuth();
   return (
     <Box py="4" mb="2">
       <Container maxW={"container.lg"}>
@@ -36,6 +45,18 @@ const Navbar = () => {
             <Link to="/movies">Movies</Link>
             <Link to="/shows">TV Shows</Link>
             <Link to="/search">Search</Link>
+            {/* {user && (
+              <Menu>
+                <MenuButton>
+                  <Avatar
+                    bg={"yellow"}
+                    color={"white"}
+                    size={"sm"}
+                    name="Code"
+                  />
+                </MenuButton>
+              </Menu>
+            )} */}
           </Flex>
         </Flex>
       </Container>
