@@ -5,12 +5,24 @@ import {
   Flex,
   Menu,
   MenuButton,
+  MenuItem,
+  MenuList,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-// import { useAuth } from "../context/useAuth";
+import { useAuth } from "../context/useAuth";
+import { Search2Icon } from "@chakra-ui/icons";
 
 const Navbar = () => {
-  // const { user, signOut, signInWithGoogle } = useAuth();
+  const { user, logout, signInWithGoogle } = useAuth() as any;
+
+  const hanldeGoogleLogin = async () => {
+    try {
+      await signInWithGoogle();
+      console.log("User signed in successfully");
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+    }
+  };
   return (
     <Box py="4" mb="2">
       <Container maxW={"container.lg"}>
@@ -44,8 +56,11 @@ const Navbar = () => {
             <Link to="/">Home</Link>
             <Link to="/movies">Movies</Link>
             <Link to="/shows">TV Shows</Link>
-            <Link to="/search">Search</Link>
-            {/* {user && (
+            <Link to="/search">
+              {" "}
+              <Search2Icon />
+            </Link>
+            {user && (
               <Menu>
                 <MenuButton>
                   <Avatar
@@ -55,8 +70,22 @@ const Navbar = () => {
                     name="Code"
                   />
                 </MenuButton>
+                <MenuList>
+                  <Link to={"/"}>
+                    <MenuItem>Watchlist</MenuItem>
+                  </Link>
+                  <MenuItem onClick={logout}>logout</MenuItem>
+                </MenuList>
               </Menu>
-            )} */}
+            )}
+            {!user && (
+              <Avatar
+                size={"sm"}
+                bg={"gray"}
+                as={"button"}
+                onClick={hanldeGoogleLogin}
+              ></Avatar>
+            )}
           </Flex>
         </Flex>
       </Container>
