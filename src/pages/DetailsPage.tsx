@@ -40,6 +40,7 @@ import { VideoDetails, VideosData } from "../types/videos.interface";
 import VideoComponent from "../components/VideoComponent";
 import { useAuth } from "../context/useAuth";
 import { useFirestore } from "../services/firestore";
+import { data } from "framer-motion/client";
 
 const DetailsPage = () => {
   const { type, id } = useParams<{ type: string; id: string }>(); // Ensure correct typing for params
@@ -50,7 +51,8 @@ const DetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth() as any;
   const toast = useToast();
-  const { addToWatchlist } = useFirestore();
+  const { addToWatchlist, checkIfInWatchlist } = useFirestore();
+  const [isInWatchlist, setIsInWatchlist] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -113,7 +115,20 @@ const DetailsPage = () => {
     // addDocument("watchlist", data);
     const dataId = details?.id.toString();
     await addToWatchlist(user?.uid, dataId, data);
+    const isInWatchlist = await checkIfInWatchlist(user?.uid, dataId);
+    setIsInWatchlist(isInWatchlist);
   };
+
+  useEffect(() => {
+    if (!user) {
+      setIsInWatchlist(false);
+      return;
+    }
+    checkIfInWatchlist(user?.uid, id).then((data) => {
+      setIsInWatchlist(data);
+    });
+  }, [id, user, checkIfInWatchlist()]);
+
   if (loading) {
     return (
       <Flex justify={"center"} marginTop={"40"}>
@@ -201,22 +216,24 @@ const DetailsPage = () => {
                   </CircularProgressLabel>
                 </CircularProgress>
                 <Text display={{ base: "none", md: "initial" }}>Score</Text>
-                <Button
-                  mx={"4"}
-                  leftIcon={<CheckCircleIcon />}
-                  colorScheme="green"
-                  variant={"outline"}
-                >
-                  In WacthList
-                </Button>
-
-                <Button
-                  leftIcon={<PlusSquareIcon />}
-                  variant={"outline"}
-                  onClick={handleSaveWatchList}
-                >
-                  WatchList
-                </Button>
+                {isInWatchlist ? (
+                  <Button
+                    mx={"4"}
+                    leftIcon={<CheckCircleIcon />}
+                    colorScheme="green"
+                    variant={"outline"}
+                  >
+                    In WacthList
+                  </Button>
+                ) : (
+                  <Button
+                    leftIcon={<PlusSquareIcon />}
+                    variant={"outline"}
+                    onClick={handleSaveWatchList}
+                  >
+                    WatchList
+                  </Button>
+                )}
               </Flex>
               <Text
                 opacity={"70%"}

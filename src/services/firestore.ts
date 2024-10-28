@@ -13,7 +13,6 @@ export const useFirestore = () => {
     try {
       if (await checkIfInWatchlist(userId, dataId)) {
         toast({
-          title: "Add Error",
           description: "This item already in watchlist",
           duration: 5000,
           status: "warning",
@@ -39,24 +38,26 @@ export const useFirestore = () => {
     }
   };
 
+  //check watchlist
+  const checkIfInWatchlist = async (userId: any, dataId: any) => {
+    const docRef = doc(
+      db,
+      "users",
+      userId.toString(),
+      "watchlist",
+      dataId?.toString()
+    );
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   return {
     addDocument,
     addToWatchlist,
+    checkIfInWatchlist,
   };
-};
-
-const checkIfInWatchlist = async (userId: any, dataId: any) => {
-  const docRef = doc(
-    db,
-    "users",
-    userId.toString(),
-    "watchlist",
-    dataId?.toString()
-  );
-  const docSnap = await getDoc(docRef);
-  if (docSnap.exists()) {
-    return true;
-  } else {
-    return false;
-  }
 };
