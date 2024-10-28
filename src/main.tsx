@@ -10,6 +10,8 @@ import Shows from "./pages/shows/Shows";
 import Search from "./pages/search/Search";
 import DetailsPage from "./pages/DetailsPage";
 import { AuthProvider } from "./context/authProvider";
+import WatchList from "./pages/WatchList";
+import Protected from "./components/routes/Protected";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +37,14 @@ const router = createBrowserRouter([
       {
         path: "/:type/:id",
         element: <DetailsPage />,
+      },
+      {
+        path: "watchlist",
+        element: (
+          <Protected>
+            <WatchList />
+          </Protected>
+        ),
       },
     ],
   },
