@@ -39,6 +39,7 @@ import { CastDetails, CreditsData } from "../types/castDetail.interface";
 import { VideoDetails, VideosData } from "../types/videos.interface";
 import VideoComponent from "../components/VideoComponent";
 import { useAuth } from "../context/useAuth";
+import { useFirestore } from "../services/firestore";
 
 const DetailsPage = () => {
   const { type, id } = useParams<{ type: string; id: string }>(); // Ensure correct typing for params
@@ -49,6 +50,7 @@ const DetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth() as any;
   const toast = useToast();
+  const { addToWatchlist } = useFirestore();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -107,7 +109,10 @@ const DetailsPage = () => {
       overview: details?.overview,
       voteAverage: details?.vote_average,
     };
-    console.log(data);
+    // console.log(data);
+    // addDocument("watchlist", data);
+    const dataId = details?.id.toString();
+    await addToWatchlist(user?.uid, dataId, data);
   };
   if (loading) {
     return (
