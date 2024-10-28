@@ -12,6 +12,7 @@ import {
   Image,
   Spinner,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import {
   fetchCredits,
@@ -37,6 +38,7 @@ import { MovieDetails } from "../types/dataDetails.interface";
 import { CastDetails, CreditsData } from "../types/castDetail.interface";
 import { VideoDetails, VideosData } from "../types/videos.interface";
 import VideoComponent from "../components/VideoComponent";
+import { useAuth } from "../context/useAuth";
 
 const DetailsPage = () => {
   const { type, id } = useParams<{ type: string; id: string }>(); // Ensure correct typing for params
@@ -45,6 +47,8 @@ const DetailsPage = () => {
   const [video, setVideo] = useState<VideoDetails | null>(null);
   const [videos, setVideos] = useState<VideoDetails[]>([]); // Initialize as an empty array
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth() as any;
+  const toast = useToast();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,8 +89,26 @@ const DetailsPage = () => {
     fetchData();
   }, [type, id]);
 
-  console.log(video, "video");
-  console.log(videos, "videos");
+  const handleSaveWatchList = async () => {
+    if (!user) {
+      toast({
+        title: "Please sign in to save to your watchlist",
+        status: "error",
+        isClosable: true,
+      });
+    }
+
+    const data = {
+      id: details?.id,
+      title: details?.title || details?.name,
+      type: type,
+      poster_path: details?.poster_path,
+      releaseDate: details?.release_date || details?.first_air_date,
+      overview: details?.overview,
+      voteAverage: details?.vote_average,
+    };
+    console.log(data);
+  };
   if (loading) {
     return (
       <Flex justify={"center"} marginTop={"40"}>
@@ -183,7 +205,11 @@ const DetailsPage = () => {
                   In WacthList
                 </Button>
 
-                <Button leftIcon={<PlusSquareIcon />} variant={"outline"}>
+                <Button
+                  leftIcon={<PlusSquareIcon />}
+                  variant={"outline"}
+                  onClick={handleSaveWatchList}
+                >
                   WatchList
                 </Button>
               </Flex>
