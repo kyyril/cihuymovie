@@ -40,7 +40,6 @@ import { VideoDetails, VideosData } from "../types/videos.interface";
 import VideoComponent from "../components/VideoComponent";
 import { useAuth } from "../context/useAuth";
 import { useFirestore } from "../services/firestore";
-import { data } from "framer-motion/client";
 
 const DetailsPage = () => {
   const { type, id } = useParams<{ type: string; id: string }>(); // Ensure correct typing for params
@@ -51,7 +50,8 @@ const DetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth() as any;
   const toast = useToast();
-  const { addToWatchlist, checkIfInWatchlist } = useFirestore();
+  const { addToWatchlist, checkIfInWatchlist, removeFromWatchlist } =
+    useFirestore();
   const [isInWatchlist, setIsInWatchlist] = useState(false);
 
   useEffect(() => {
@@ -93,6 +93,7 @@ const DetailsPage = () => {
     fetchData();
   }, [type, id]);
 
+  //handle save watchlist
   const handleSaveWatchList = async () => {
     if (!user) {
       toast({
@@ -127,7 +128,14 @@ const DetailsPage = () => {
     checkIfInWatchlist(user?.uid, id).then((data) => {
       setIsInWatchlist(data);
     });
-  }, [id, user, checkIfInWatchlist()]);
+  }, [id, user]);
+
+  //hanlde remove
+  const handleRemoveWatchlist = async () => {
+    await removeFromWatchlist(user?.uid, id);
+    const isInWatchlist = await checkIfInWatchlist(user?.uid, id);
+    setIsInWatchlist(isInWatchlist);
+  };
 
   if (loading) {
     return (
@@ -222,6 +230,7 @@ const DetailsPage = () => {
                     leftIcon={<CheckCircleIcon />}
                     colorScheme="green"
                     variant={"outline"}
+                    onClick={handleRemoveWatchlist}
                   >
                     In WacthList
                   </Button>
