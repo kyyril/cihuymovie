@@ -1,5 +1,5 @@
 import {
-  addDoc,
+  //   addDoc,
   collection,
   deleteDoc,
   doc,
@@ -9,15 +9,14 @@ import {
 } from "firebase/firestore";
 import { db } from "../services/firebase";
 import { useToast } from "@chakra-ui/react";
-import { data } from "framer-motion/client";
 import { useCallback } from "react";
 
 export const useFirestore = () => {
   const toast = useToast();
   //add new document
-  const addDocument = async (collectionName: any, data: any) => {
-    const docRef = await addDoc(collection(db, collectionName), data);
-  };
+  //   const addDocument = async (collectionName: any, data: any) => {
+  //     const docRef = await addDoc(collection(db, collectionName), data);
+  //   };
 
   const addToWatchlist = async (userId: any, dataId: any, data: any) => {
     try {
@@ -99,7 +98,7 @@ export const useFirestore = () => {
   }, []);
 
   return {
-    addDocument,
+    // addDocument,
     addToWatchlist,
     checkIfInWatchlist,
     removeFromWatchlist,
