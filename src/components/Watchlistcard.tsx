@@ -61,7 +61,7 @@ const WatchlistCard = ({ type, item, setWatchlist }: any) => {
             ).getFullYear() || "N/A"}
           </Heading>
           <Flex alignItems={"center"} gap={2} mt="4">
-            <StarIcon fontSize={"small"} />
+            <StarIcon color={"yellow"} fontSize={"small"} />
             <Text textAlign={"center"} fontSize="small">
               {item?.vote_average?.toFixed(1)}
             </Text>
