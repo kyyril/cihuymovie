@@ -4,11 +4,13 @@ import {
   deleteDoc,
   doc,
   getDoc,
+  getDocs,
   setDoc,
 } from "firebase/firestore";
 import { db } from "../services/firebase";
 import { useToast } from "@chakra-ui/react";
 import { data } from "framer-motion/client";
+import { useCallback } from "react";
 
 export const useFirestore = () => {
   const toast = useToast();
@@ -86,10 +88,21 @@ export const useFirestore = () => {
     }
   };
 
+  const getWatchlist = useCallback(async (userId: any) => {
+    const querySnapshot = await getDocs(
+      collection(db, "users", userId, "watchlist")
+    );
+    const data = querySnapshot.docs.map((doc) => ({
+      ...doc.data(),
+    }));
+    return data;
+  }, []);
+
   return {
     addDocument,
     addToWatchlist,
     checkIfInWatchlist,
     removeFromWatchlist,
+    getWatchlist,
   };
 };
