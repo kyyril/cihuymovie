@@ -73,7 +73,7 @@ const Navbar = () => {
                     bg={"yellow"}
                     color={"white"}
                     size={"sm"}
-                    name="Code"
+                    name={user?.email ?? undefined}
                   />
                 </MenuButton>
                 <MenuList>
@@ -115,7 +115,11 @@ const Navbar = () => {
                 <DrawerHeader>
                   {user ? (
                     <Flex alignItems="center" gap="2">
-                      <Avatar bg="red.500" size={"sm"} name={user?.email} />
+                      <Avatar
+                        bg="red.500"
+                        size={"sm"}
+                        name={user?.email ?? undefined}
+                      />
                       <Box fontSize={"sm"}>
                         {user?.displayName || user?.email}
                       </Box>
