@@ -20,9 +20,10 @@ import {
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
 import { HamburgerIcon, Search2Icon, SearchIcon } from "@chakra-ui/icons";
+import { AuthContextType } from "../context/authProvider";
 
 const Navbar = () => {
-  const { user, logout, signInWithGoogle } = useAuth() as any;
+  const { user, logout, signInWithGoogle } = useAuth() as AuthContextType; // Get user and auth functions from context
   const { isOpen, onOpen, onClose } = useDisclosure(); // Control drawer visibility
 
   const handleGoogleLogin = async () => {

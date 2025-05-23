@@ -9,16 +9,15 @@ import {
   User,
 } from "firebase/auth"; // Import types directly from firebase/auth
 
-// Define the context type
-interface AuthContextType {
-  user: User | null; // Use User from firebase/auth
+export interface AuthContextType {
+  user: User; // Use User from firebase/auth
   isLoading: boolean;
   signInWithGoogle: () => Promise<UserCredential>; // Correctly reference UserCredential
   logout: () => Promise<void>;
 }
 
 // Create a default value for the context
-export const AuthContext = createContext<AuthContextType | undefined>(
+export const AuthContext = createContext<AuthContextType | undefined | any>(
   undefined
 );
 
@@ -44,7 +43,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
-        setUser(currentUser as any);
+        setUser(currentUser as User); // Cast to User type
       } else {
         setUser(null);
       }

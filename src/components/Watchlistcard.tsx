@@ -13,16 +13,22 @@ import { imagePath } from "../services/api";
 import { useFirestore } from "../services/firestore";
 import { useAuth } from "../context/useAuth";
 import { CheckIcon, StarIcon } from "@chakra-ui/icons";
+import { AuthContextType } from "../context/authProvider";
 
 const WatchlistCard = ({ type, item, setWatchlist }: any) => {
   const { removeFromWatchlist } = useFirestore();
-  const { user }: any = useAuth();
+  const { user } = useAuth() as AuthContextType;
 
   const handleRemoveClick = (event: any) => {
     event.preventDefault(); // Prevent the default behavior (link redirection)
-    removeFromWatchlist(user?.uid, item.id).then(() => {
-      setWatchlist((prev: any) => prev.filter((el: any) => el.id !== item.id));
-    });
+    if (user) {
+      removeFromWatchlist(user.uid, item.id).then(() => {
+        setWatchlist((prev: any) =>
+          prev.filter((el: any) => el.id !== item.id)
+        );
+      });
+      return;
+    }
   };
 
   return (

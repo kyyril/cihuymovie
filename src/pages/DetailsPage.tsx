@@ -40,6 +40,7 @@ import { VideoDetails, VideosData } from "../types/videos.interface";
 import VideoComponent from "../components/VideoComponent";
 import { useAuth } from "../context/useAuth";
 import { useFirestore } from "../services/firestore";
+import { AuthContextType } from "../context/authProvider";
 
 const DetailsPage = () => {
   const { type, id } = useParams<{ type: string; id: string }>(); // Ensure correct typing for params
@@ -48,7 +49,7 @@ const DetailsPage = () => {
   const [video, setVideo] = useState<VideoDetails | null>(null);
   const [videos, setVideos] = useState<VideoDetails[]>([]); // Initialize as an empty array
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth() as any;
+  const { user } = useAuth() as AuthContextType;
   const toast = useToast();
   const { addToWatchlist, checkIfInWatchlist, removeFromWatchlist } =
     useFirestore();

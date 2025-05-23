@@ -3,19 +3,21 @@ import { useFirestore } from "../services/firestore";
 import { useAuth } from "../context/useAuth";
 import { Container, Flex, Grid, Heading, Spinner } from "@chakra-ui/react";
 import WatchlistCard from "../components/Watchlistcard";
+import { AuthContextType } from "../context/authProvider";
+import { WatchlistItem } from "../types/watchlist";
 
 const WatchList = () => {
   const { getWatchlist } = useFirestore();
-  const { user } = useAuth() as any;
+  const { user } = useAuth() as AuthContextType;
 
-  const [watchlist, setWatchlist] = useState<any>([]);
+  const [watchlist, setWatchlist] = useState<WatchlistItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (user?.uid) {
       getWatchlist(user?.uid)
         .then((data) => {
-          setWatchlist(data);
+          setWatchlist(data as WatchlistItem[]);
           console.log(data, "dataa");
         })
         .catch((err) => {
@@ -54,10 +56,10 @@ const WatchList = () => {
           gap={4}
           mt={6}
         >
-          {watchlist.map((item: any) => (
+          {watchlist.map((item: WatchlistItem) => (
             <WatchlistCard
               key={item.id}
-              type={item?.type}
+              type={item.type}
               item={item}
               setWatchlist={setWatchlist}
             />

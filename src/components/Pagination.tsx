@@ -1,6 +1,14 @@
 import { Button, Flex, Text } from "@chakra-ui/react";
 
-const Pagination = ({ activePage, totalPage, setActivePage }: any) => {
+const Pagination = ({
+  activePage,
+  totalPage,
+  setActivePage,
+}: {
+  activePage: number;
+  totalPage: number;
+  setActivePage: any;
+}) => {
   return (
     <Flex gap={"2"} alignItems={"center"}>
       <Flex gap={"2"} maxW={"250px"} my={"10"}>
